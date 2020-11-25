@@ -44,7 +44,7 @@ public class ServerTcp {
 						Socket clientSocket = server.accept();
 
 						//Une fois reçu, on traite l'echange avec ce nouveau client dans un nouveau thread
-						System.out.println("Une nouvelle connexion d'un client reçue!");
+						System.out.println("INFO$: Une nouvelle connexion d'un client reçue!");
 						Thread newClientThread = new Thread(new ClientProcessor(clientSocket));
 						newClientThread.start();
 					}catch(IOException e){

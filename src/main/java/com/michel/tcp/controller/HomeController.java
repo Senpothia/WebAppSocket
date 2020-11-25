@@ -31,7 +31,7 @@ public class HomeController {
 	@PostMapping("/configuration")
 	public String enregistrement(Imei imei) {
 		
-		System.out.println("Imei récupéré: " + imei.getCode());
+		System.out.println("INFO$: Imei récupéré: " + imei.getCode());
 		WebAppSocketApplication.abonnes.add(imei);
 		
 		return "redirect:/configuration";

@@ -6,6 +6,10 @@ import java.io.PrintWriter;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.SocketException;
+
+import com.michel.tcp.Imei;
+import com.michel.tcp.WebAppSocketApplication;
+
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
@@ -39,14 +43,17 @@ public class ClientProcessor implements Runnable {
 				// String response = read();
 				String response = br.readLine();
 				System.out.println("INFO$: Message reçu du client: " + response);
-				
+
 				// On affiche quelques infos, pour le débuggage
 				InetSocketAddress remote = (InetSocketAddress) mySocket.getRemoteSocketAddress();
+
 				String debug = "";
-				debug = "Thread : " + Thread.currentThread().getName() + ". ";
-				debug += "Demande de l'adresse : " + remote.getAddress().getHostAddress() + ".";
-				debug += " Sur le port : " + remote.getPort() + ".\n";
-				debug += "\t -> Commande reçue : " + response + "\n";
+				debug = "                  ----------------------------                      \n";
+				debug += "Thread : " + Thread.currentThread().getName() + "\n";
+				debug += "Demande de l'adresse : " + remote.getAddress().getHostAddress() + "\n";
+				debug += " Sur le port : " + remote.getPort() + "\n";
+				debug += "Commande reçue : " + response + "\n";
+				debug += "                 ----------------------------                      \n";
 				System.err.println("\n" + debug);
 
 				// On traite la demande du client et on lui repond
@@ -54,7 +61,7 @@ public class ClientProcessor implements Runnable {
 
 				switch (response.toUpperCase()) {
 				case "A":
-					System.out.println("case A");
+
 					toSend = "SERVEUR$: Vous m'avez envoyer la 1ere lettre de l'alphabet!";
 					break;
 				case "CLOSE":
@@ -62,17 +69,60 @@ public class ClientProcessor implements Runnable {
 					closeConnexion = true;
 					break;
 				default: {
-					if (response.toUpperCase().startsWith("C:<")) {
-						String Recu = response.substring(2).replace('<', ' ');
-						Recu = Recu.replace('>', ' ');
-						String[] strings = Recu.split("  ");
-						IMEI = strings[0];
-						IMSI = strings[1];
+					if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {
 
-						System.out.println("SERVEUR$: IMEI = " + IMEI);
-						System.out.println("SERVEUR$: IMSI = " + IMSI);
+						try {
+							String sub = response.substring(3);
+							// System.out.println("substring: " + sub);
 
-						toSend = "SERVEUR$: OK";
+							String recu = sub.replace('<', ' ');
+							// System.out.println("chaine modifiée: " + recu);
+
+							String[] strings = recu.split(" ");
+							String IMEI = strings[0];
+							IMEI = IMEI.replace(">", "");
+
+							String IMSI = strings[1];
+							IMSI = IMSI.replace(">", "");
+
+							int ei = Integer.parseInt(IMEI);
+							int si = Integer.parseInt(IMSI);
+
+							System.out.println("SERVEUR$: IMEI = " + IMEI);
+							System.out.println("SERVEUR$: IMSI = " + IMSI);
+							/*
+							 * System.out.println("SERVEUR$: decimal IMEI = " + ei);
+							 * System.out.println("SERVEUR$: decimal IMSI = " + si);
+							 */
+
+							boolean match = false;
+							int j = 0;
+
+							while (!match && j < WebAppSocketApplication.abonnes.size()) {
+
+								Imei i = WebAppSocketApplication.abonnes.get(j);
+								int c = i.getCode();
+								if (c == ei) {
+
+									toSend = "SERVEUR$: OK";
+									match = true;
+
+								}
+
+								j++;
+							}
+
+							if (!match) {
+
+								System.out.println("Aucun code enregistré trouvé!");
+								toSend = "SERVEUR$: ERROR";
+							}
+
+						} catch (Exception e) {
+
+							toSend = "SERVEUR$: Syntax Error !";
+
+						}
 
 					} else {
 
@@ -103,7 +153,10 @@ public class ClientProcessor implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+			System.out.println("********************************************************************\n");
 		}
+
 		return;
 	}
 

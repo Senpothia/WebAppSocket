@@ -43,7 +43,7 @@ public class WebAppSocketApplication {
 		      ServerTcp ts = new ServerTcp(port, 100);
 		      ts.open();
 		      
-		      System.out.println("Serveur initialisé.");
+		      System.out.println("INFO$: Serveur initialisé.");
 		      
 		    
 		
