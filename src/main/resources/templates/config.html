@@ -13,7 +13,7 @@
 	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
 	crossorigin="anonymous">
 <link rel="stylesheet" href="/css/styles.css">
-<title>Configuration</title>
+<title>WebAppTcp - Configuration</title>
 </head>
 <body>
 	<div class="container">
@@ -59,10 +59,11 @@
 							<table class="table table-striped">
 								<thead>
 									<tr>
-										<th style="text-align: center" scope="col">Codes enregistrés</th>
+										<th style="text-align: center" scope="col">Codes
+											enregistrés</th>
 
-									<!-- <th style="text-align: center" scope="col">Autorisations</th>
-									 -->	
+										<!-- <th style="text-align: center" scope="col">Autorisations</th>
+									 -->
 
 
 
@@ -73,7 +74,7 @@
 
 										<td style="text-align: center" th:text="${abonne.code}" />
 
-<!--  
+										<!--  
 
 										<td style="text-align: center"><span
 											th:if="${droits.get(iStat.index)}"><img
@@ -107,11 +108,15 @@
 					<div class="bouton row">
 
 						<div class="col">
-							<div class="d-flex justify-content-end">
-								<input type="submit" class="btn mt-3 bouton2"
-									style="background-color: #7e60fb; color: white;"
-									value="Enregistrer">
 
+							<div class="d-flex justify-content-end">
+							<a
+							class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
+							role="button">Connexions</a>
+								<input type="submit" class="btn btn-primary mt-3 bouton2"
+									value="Enregistrer">
+									
+								
 							</div>
 						</div>
 					</div>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="shortcut icon" type="image/x-icon" href="/images/logo0.png" />
+<title>WebAppTcp Connexions</title>
+</head>
+<body>
+	<div class="container">
+
+
+
+
+
+		<!-- ----------------- -->
+		<div class="row d-flex justify-content-center">
+
+			<h1>Liste des connexions</h1>
+		</div>
+
+
+
+		<div class="col donnees" style="margin: 5px;">
+
+
+			<div class="row">
+
+				<div class="col donnees" style="margin: 5px;">
+
+					<table class="table table-striped">
+						<thead>
+							<tr>
+
+								<th style="text-align: center" scope="col">N°</th>
+								<th style="text-align: center" scope="col">Imei</th>
+
+								<th style="text-align: center" scope="col">Adresse IP</th>
+
+
+								<th style="text-align: center" scope="col">Date</th>
+
+								<th style="text-align: center" scope="col">Autorisation</th>
+
+
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="connexion, iStat: ${connexions}">
+
+								<td style="text-align: center" th:text="${iStat.index}" />
+								<td style="text-align: center" th:text="${connexion.imei.getCode()}" />
+								<td style="text-align: center" th:text="${connexion.ip}" />
+								<td style="text-align: center" th:text="${connexion.dateTexte}" />
+
+
+								<td style="text-align: center"><span
+									th:if="${connexion.autorisation}"><img
+										class="img-fluid" src="/vert.png" alt="" th:src="@{/vert.png}" /></span>
+									<span th:unless="${connexion.autorisation}"><img
+										class="img-fluid" src="/rouge.png" alt=""
+										th:src="@{/rouge.png}" /></span></td>
+							</tr>
+
+						</tbody>
+					</table>
+
+
+				</div>
+
+
+			</div>
+
+			<div class="row">
+
+				<div class="col">
+					<div class="d-flex justify-content-end">
+						<a class="btn btn-primary mb-1 mr-1 bouton2"
+							href="/configuration" role="button">Configuration</a> <a
+							class="btn btn-primary mb-1 mr-1 bouton2" href="/connexions"
+							role="button">Raffraichir</a>
+
+
+					</div>
+				</div>
+
+
+
+
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+
+
+
+	</div>
+	<!-- fin conteneur -->
+
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+</body>

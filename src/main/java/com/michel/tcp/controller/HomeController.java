@@ -36,5 +36,15 @@ public class HomeController {
 		
 		return "redirect:/configuration";
 	}
+	
+	@GetMapping("/connexions")
+	public String boardConnexions(Model model) {
+		
+		
+		model.addAttribute("connexions", WebAppSocketApplication.connexions);
+		
+		
+		return "connexions";
+	}
 
 }

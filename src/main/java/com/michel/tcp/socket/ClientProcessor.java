@@ -6,7 +6,11 @@ import java.io.PrintWriter;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.SocketException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
+import com.michel.tcp.Connexion;
 import com.michel.tcp.Imei;
 import com.michel.tcp.WebAppSocketApplication;
 
@@ -58,6 +62,12 @@ public class ClientProcessor implements Runnable {
 
 				// On traite la demande du client et on lui repond
 				String toSend = "";
+				
+				Connexion connexion = new Connexion();
+				LocalDateTime date = LocalDateTime.now();
+				connexion.setDate(date);
+				connexion.setDateTexte(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+				connexion.setIp(remote.getAddress().getHostAddress());
 
 				switch (response.toUpperCase()) {
 				case "A":
@@ -87,7 +97,10 @@ public class ClientProcessor implements Runnable {
 
 							int ei = Integer.parseInt(IMEI);
 							int si = Integer.parseInt(IMSI);
-
+							
+							Imei imei = new Imei(ei);
+							connexion.setImei(imei);
+							
 							System.out.println("SERVEUR$: IMEI = " + IMEI);
 							System.out.println("SERVEUR$: IMSI = " + IMSI);
 							/*
@@ -106,6 +119,7 @@ public class ClientProcessor implements Runnable {
 
 									toSend = "SERVEUR$: OK";
 									match = true;
+									connexion.setAutorisation(true);
 
 								}
 
@@ -116,13 +130,18 @@ public class ClientProcessor implements Runnable {
 
 								System.out.println("Aucun code enregistré trouvé!");
 								toSend = "SERVEUR$: ERROR";
+								connexion.setAutorisation(false);
 							}
+							
+							
 
 						} catch (Exception e) {
 
 							toSend = "SERVEUR$: Syntax Error !";
 
 						}
+						
+						WebAppSocketApplication.connexions.add(connexion);
 
 					} else {
 
