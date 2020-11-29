@@ -15,22 +15,26 @@ public class WebAppSocketApplication {
 
 	public static List<Imei> abonnes = new ArrayList<Imei>();
 	public static List<Connexion> connexions = new ArrayList<Connexion>();
+	public static Buffer buffer = new Buffer();;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebAppSocketApplication.class, args);
 
-		/*
-		String ip = "35.180.165.19";
-		Imei imei = new Imei(125463);
-		LocalDateTime date = LocalDateTime.now();
-		boolean autorisation = true;
-		
-		Connexion connexion =  new Connexion(imei, ip, date, autorisation);
-		WebAppSocketApplication.connexions.add(connexion);
-		 */
-		
+	
 		int port = 5725;
-
+		long codeInit1 = 867420040418313L;
+		Imei imeiInit1 = new Imei(codeInit1);
+		abonnes.add(imeiInit1);
+		
+		long codeInit2 = 867420040421598L;
+		Imei imeiInit2 = new Imei(codeInit2);
+		abonnes.add(imeiInit2);
+		
+		long codeInit3 = 15L;
+		Imei imeiInit3 = new Imei(codeInit3);
+		abonnes.add(imeiInit3);
+		
+		
 		ServerTcp ts = new ServerTcp(port, 100);
 		ts.open();
 

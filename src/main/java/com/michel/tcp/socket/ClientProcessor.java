@@ -9,6 +9,8 @@ import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.michel.tcp.Connexion;
 import com.michel.tcp.Imei;
@@ -17,16 +19,18 @@ import com.michel.tcp.WebAppSocketApplication;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
-public class ClientProcessor implements Runnable {
+public class ClientProcessor implements Runnable, Observer {
 
 	private Socket mySocket;
 	private PrintWriter writer = null;
 	private BufferedInputStream reader = null;
 	private String IMEI = "";
 	private String IMSI = "";
+	private Connexion connexion;
 
-	public ClientProcessor(Socket socket) {
+	public ClientProcessor(Socket socket, Connexion connexion) {
 		this.mySocket = socket;
+		this.connexion = connexion;
 	}
 
 	// Le traitement
@@ -34,17 +38,13 @@ public class ClientProcessor implements Runnable {
 		System.out.println("INFO$: Lancement du traitement de la connexion d'un client");
 		boolean closeConnexion = false;
 
-		// Tanque la connexion est active
+		// Tant que la connexion est active
 		while (!mySocket.isClosed()) {
 			try {
 				writer = new PrintWriter(mySocket.getOutputStream());
 				InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
 				BufferedReader br = new BufferedReader(inr);
-				// writer = new PrintWriter(mySocket.getOutputStream());
-				// reader = new BufferedInputStream(mySocket.getInputStream());
-
-				// On attend la demande du client
-				// String response = read();
+				
 				String response = br.readLine();
 				System.out.println("INFO$: Message reçu du client: " + response);
 
@@ -58,163 +58,135 @@ public class ClientProcessor implements Runnable {
 				debug += " Sur le port : " + remote.getPort() + "\n";
 				debug += "Commande reçue : " + response + "\n";
 				debug += "                 ----------------------------                      \n";
+				debug += "Date de réception: " + LocalDateTime.now() + "\n";
+
 				System.err.println("\n" + debug);
 
 				// On traite la demande du client et on lui repond
 				String toSend = "";
+
 				
-				Connexion connexion = new Connexion();
-				LocalDateTime date = LocalDateTime.now();
-				connexion.setDate(date);
-				connexion.setDateTexte(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-				connexion.setIp(remote.getAddress().getHostAddress());
+				try {
 
-				switch (response.toUpperCase()) {
-				case "A":
+					switch (response.toUpperCase()) {
+					case "A":
 
-					toSend = "SERVEUR$: Vous m'avez envoyer la 1ere lettre de l'alphabet!";
-					break;
-				case "CLOSE":
-					toSend = "SERVEUR$: Vous voulez partir donc! D'accord, bye bye!";
-					closeConnexion = true;
-					break;
-				default: {
-					if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {
+						toSend = "SERVEUR$: Vous m'avez envoyer la 1ere lettre de l'alphabet!";
+						break;
+					case "CLOSE":
+						toSend = "SERVEUR$: Vous voulez partir donc! D'accord, bye bye!";
+						closeConnexion = true;
+						break;
+					default: {
+						if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {
 
-						try {
-							String sub = response.substring(3);
-							// System.out.println("substring: " + sub);
-
-							String recu = sub.replace('<', ' ');
-							// System.out.println("chaine modifiée: " + recu);
-
-							String[] strings = recu.split(" ");
-							String IMEI = strings[0];
-							IMEI = IMEI.replace(">", "");
-
-							String IMSI = strings[1];
-							IMSI = IMSI.replace(">", "");
-
-							int ei = Integer.parseInt(IMEI);
-							int si = Integer.parseInt(IMSI);
+							try {
+								String sub = response.substring(3);
+								
+								String recu = sub.replace('<', ' ');
 							
-							Imei imei = new Imei(ei);
-							connexion.setImei(imei);
-							
-							System.out.println("SERVEUR$: IMEI = " + IMEI);
-							System.out.println("SERVEUR$: IMSI = " + IMSI);
-							/*
-							 * System.out.println("SERVEUR$: decimal IMEI = " + ei);
-							 * System.out.println("SERVEUR$: decimal IMSI = " + si);
-							 */
 
-							boolean match = false;
-							int j = 0;
+								String[] strings = recu.split(" ");
+								String IMEI = strings[0];
+								IMEI = IMEI.replace(">", "");
 
-							while (!match && j < WebAppSocketApplication.abonnes.size()) {
+								String IMSI = strings[1];
+								IMSI = IMSI.replace(">", "");
 
-								Imei i = WebAppSocketApplication.abonnes.get(j);
-								int c = i.getCode();
-								if (c == ei) {
+								long ei = Long.parseLong(IMEI);
+								long si = Long.parseLong(IMSI);
 
-									toSend = "SERVEUR$: OK";
-									match = true;
-									connexion.setAutorisation(true);
+								Imei imei = new Imei(ei);
+								connexion.setImei(imei);
 
+								System.out.println("SERVEUR$: IMEI = " + IMEI);
+								System.out.println("SERVEUR$: IMSI = " + IMSI);
+								
+
+								boolean match = false;
+								int j = 0;
+
+								while (!match && j < WebAppSocketApplication.abonnes.size()) {
+
+									Imei i = WebAppSocketApplication.abonnes.get(j);
+									long c = i.getCode();
+									if (c == ei) {
+
+										toSend = "OK";
+										match = true;
+										connexion.setAutorisation(true);
+
+									}
+
+									j++;
 								}
 
-								j++;
+								if (!match) {
+
+									System.out.println("Aucun code enregistré trouvé!");
+									toSend = "ERROR";
+									connexion.setAutorisation(false);
+								}
+
+							} catch (Exception e) {
+
+								toSend = "Syntax Error !";
+
 							}
 
-							if (!match) {
+							WebAppSocketApplication.connexions.add(connexion);
 
-								System.out.println("Aucun code enregistré trouvé!");
-								toSend = "SERVEUR$: ERROR";
-								connexion.setAutorisation(false);
-							}
-							
-							
+						} else {
 
-						} catch (Exception e) {
-
-							toSend = "SERVEUR$: Syntax Error !";
-
+							toSend = "Syntax Error !";
+							// toSend = String.valueOf(findSum(response));
 						}
-						
-						WebAppSocketApplication.connexions.add(connexion);
 
-					} else {
-
-						toSend = "SERVEUR$: Syntax Error !";
-						// toSend = String.valueOf(findSum(response));
+						break;
 					}
 
-					break;
-				}
+					}
 
-				}
+				} catch (Exception e) {
 
+					WebAppSocketApplication.connexions.remove(connexion);
+					mySocket.close();
+				}
+				
 				System.out.println("INFO$: toSend = " + toSend);
 				// On envoie la reponse au client
 				writer.println(toSend);
 				writer.flush();
 
 				if (closeConnexion) {
-					System.err.println("INFO$: COMMANDE CLOSE DETECTEE! ");
+					System.err.println("INFO$: COMMANDE CLOSE DETECTEE!");
 					writer = null;
 					reader = null;
 					mySocket.close();
+					WebAppSocketApplication.connexions.remove(connexion);
 					break;
 				}
+				
 			} catch (SocketException e) {
-				System.err.println("INFO$: LA CONNEXION A ETE INTERROMPUE ! ");
+				System.err.println("INFO$: LA CONNEXION A ETE INTERROMPUE !");
 				break;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 			System.out.println("********************************************************************\n");
-		}
+			
+		}  // fin while 
 
-		return;
+		System.out.println("Sortie");
+		WebAppSocketApplication.connexions.remove(connexion);
+		// return;
 	}
 
-	// La methode que nous utilisons pour lire la reponse du client
-	/*
-	 * private String read() throws IOException{ String response = ""; int stream;
-	 * byte[] b = new byte[4096]; stream = reader.read(b); response = new String (b,
-	 * 0, stream); return response; }
-	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
 
-	public int findSum(String str) {
-		// A temporary string
-		String temp = "0";
-
-		// holds sum of all numbers present in the string
-		int sum = 0;
-
-		// read each character in input string
-		for (int i = 0; i < str.length(); i++) {
-			char ch = str.charAt(i);
-
-			// if current character is a digit
-			if (Character.isDigit(ch))
-				temp += ch;
-
-			// if current character is an alphabet
-			else {
-				// increment sum by number found earlier
-				// (if any)
-				sum += Integer.parseInt(temp);
-
-				// reset temporary string to empty
-				temp = "0";
-			}
-		}
-
-		// atoi(temp.c_str()) takes care of trailing
-		// numbers
-		return sum + Integer.parseInt(temp);
 	}
 
 }
