@@ -106,5 +106,16 @@ public class HomeController {
 		return "redirect:/hexadecimal";
 		
 	}
+	
+	@GetMapping("/hello")
+	public String hello(Model model) {
+		
+		WebAppSocketApplication.chaine.setMessage("hello");
+		WebAppSocketApplication.chaine.setChange(true);
+		System.out.println("String envoyé au client: " + WebAppSocketApplication.chaine.getMessage());
+		model.addAttribute("error", false);
+		return "redirect:/hexadecimal";
+		
+	}
 
 }

@@ -64,6 +64,8 @@ public class ClientProcessor2 implements Runnable {
 					WebAppSocketApplication.chaine.setChange(false);
 
 				}
+				
+				
 		}
 
 	// Tant que la connexion est active
