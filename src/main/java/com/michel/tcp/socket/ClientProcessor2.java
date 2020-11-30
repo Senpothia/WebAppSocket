@@ -36,7 +36,7 @@ public class ClientProcessor2 implements Runnable {
 	// Le traitement
 	public void run() {
 			
-			System.out.println("INFO$: Lancement du traitement de la connexion d'un client");
+			System.out.println("INFO$: Lancement du traitement des transferts vers le client");
 			boolean closeConnexion = false;
 
 			while(!mySocket.isClosed()){
@@ -50,13 +50,18 @@ public class ClientProcessor2 implements Runnable {
 				
 				if (WebAppSocketApplication.buffer.isChange()) {
 
-					// if(true) {
-
-					// System.out.println("Envoi code");
+					
 					writer.println(WebAppSocketApplication.buffer.getCode());
-					// writer.println("Coucou!");
 					writer.flush();
 					WebAppSocketApplication.buffer.setChange(false);
+
+				}
+				
+				if (WebAppSocketApplication.chaine.isChange()) {
+
+					writer.println(WebAppSocketApplication.chaine.getMessage());
+					writer.flush();
+					WebAppSocketApplication.chaine.setChange(false);
 
 				}
 		}

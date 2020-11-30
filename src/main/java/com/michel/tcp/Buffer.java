@@ -9,7 +9,7 @@ import com.michel.tcp.socket.ServerTcp;
 public class Buffer extends Observable {
 
 	private String code = "0";
-	private boolean change = true;
+	private boolean change = false;
 
 	public Buffer() {
 		super();

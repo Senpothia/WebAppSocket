@@ -70,6 +70,49 @@
 						<div class="col">
 
 							<div class="d-flex justify-content-end">
+							<!--  
+							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/configuration"
+									role="button">Configuration</a>
+								<a class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
+									role="button">Connexions</a>
+									
+								-->	
+									 <input type="submit"
+									class="btn btn-primary mt-3 bouton2" value="Envoyer">
+
+
+							</div>
+						</div>
+					</div>
+			</form>
+			
+			
+			<form th:action="@{/string}" method="post" th:object="${chaine}">
+
+
+				<div class="col">
+
+
+					<div class="row">
+
+						<div class="col donnees" style="margin: 5px;"></div>
+
+
+					</div>
+
+					<div class="row mr-1">
+						<label for="text">String quelconque à transmettre</label> <input
+							type="text" class="form-control" th:field="*{message}">
+					</div>
+
+
+
+
+					<div class="bouton row">
+
+						<div class="col">
+
+							<div class="d-flex justify-content-end">
 							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/configuration"
 									role="button">Configuration</a>
 								<a class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.michel.tcp.Buffer;
+import com.michel.tcp.Chaine;
 import com.michel.tcp.Imei;
 import com.michel.tcp.WebAppSocketApplication;
 
@@ -53,7 +54,9 @@ public class HomeController {
 		
 		
 		Buffer buffer = new Buffer();
+		Chaine chaine = new Chaine();
 		model.addAttribute("buffer", buffer);
+		model.addAttribute("chaine", chaine);
 		model.addAttribute("error", false);
 		return "hexa";
 	}
@@ -63,7 +66,9 @@ public class HomeController {
 		
 		
 		Buffer buffer = new Buffer();
+		Chaine chaine = new Chaine();
 		model.addAttribute("buffer", buffer);
+		model.addAttribute("chaine", chaine);
 		model.addAttribute("error", true);
 		return "hexa";
 	}
@@ -89,6 +94,16 @@ public class HomeController {
 			
 		}
 		
+	}
+	
+	@PostMapping("/string")
+	public String chaine(Model model, Chaine chaine) {
+		
+		WebAppSocketApplication.chaine.setMessage(chaine.getMessage());
+		WebAppSocketApplication.chaine.setChange(true);
+		System.out.println("String envoyé au client: " + WebAppSocketApplication.chaine.getMessage());
+		model.addAttribute("error", false);
+		return "redirect:/hexadecimal";
 		
 	}
 
