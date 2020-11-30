@@ -2,7 +2,7 @@ package com.michel.tcp;
 
 public class Imei {
 	
-	private long code;
+	private long code =0L;
 
 	public Imei() {
 		super();

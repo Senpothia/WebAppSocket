@@ -37,122 +37,27 @@ public class ClientProcessor implements Runnable, Observer {
 	public void run() {
 		System.out.println("INFO$: Lancement du traitement de la connexion d'un client");
 		boolean closeConnexion = false;
-
+	//	WebAppSocketApplication.connexions.add(connexion);
+		
 		// Tant que la connexion est active
 		while (!mySocket.isClosed()) {
 			try {
 				writer = new PrintWriter(mySocket.getOutputStream());
 				InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
 				BufferedReader br = new BufferedReader(inr);
-				
+
 				String response = br.readLine();
 				System.out.println("INFO$: Message reçu du client: " + response);
 
 				// On affiche quelques infos, pour le débuggage
-				InetSocketAddress remote = (InetSocketAddress) mySocket.getRemoteSocketAddress();
-
-				String debug = "";
-				debug = "                  ----------------------------                      \n";
-				debug += "Thread : " + Thread.currentThread().getName() + "\n";
-				debug += "Demande de l'adresse : " + remote.getAddress().getHostAddress() + "\n";
-				debug += " Sur le port : " + remote.getPort() + "\n";
-				debug += "Commande reçue : " + response + "\n";
-				debug += "                 ----------------------------                      \n";
-				debug += "Date de réception: " + LocalDateTime.now() + "\n";
-
-				System.err.println("\n" + debug);
+				getInfoConnexion(mySocket, response);
 
 				// On traite la demande du client et on lui repond
 				String toSend = "";
-
 				
-				try {
-
-					switch (response.toUpperCase()) {
-					case "A":
-
-						toSend = "SERVEUR$: Vous m'avez envoyer la 1ere lettre de l'alphabet!";
-						break;
-					case "CLOSE":
-						toSend = "SERVEUR$: Vous voulez partir donc! D'accord, bye bye!";
-						closeConnexion = true;
-						break;
-					default: {
-						if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {
-
-							try {
-								String sub = response.substring(3);
-								
-								String recu = sub.replace('<', ' ');
-							
-
-								String[] strings = recu.split(" ");
-								String IMEI = strings[0];
-								IMEI = IMEI.replace(">", "");
-
-								String IMSI = strings[1];
-								IMSI = IMSI.replace(">", "");
-
-								long ei = Long.parseLong(IMEI);
-								long si = Long.parseLong(IMSI);
-
-								Imei imei = new Imei(ei);
-								connexion.setImei(imei);
-
-								System.out.println("SERVEUR$: IMEI = " + IMEI);
-								System.out.println("SERVEUR$: IMSI = " + IMSI);
-								
-
-								boolean match = false;
-								int j = 0;
-
-								while (!match && j < WebAppSocketApplication.abonnes.size()) {
-
-									Imei i = WebAppSocketApplication.abonnes.get(j);
-									long c = i.getCode();
-									if (c == ei) {
-
-										toSend = "OK";
-										match = true;
-										connexion.setAutorisation(true);
-
-									}
-
-									j++;
-								}
-
-								if (!match) {
-
-									System.out.println("Aucun code enregistré trouvé!");
-									toSend = "ERROR";
-									connexion.setAutorisation(false);
-								}
-
-							} catch (Exception e) {
-
-								toSend = "Syntax Error !";
-
-							}
-
-							WebAppSocketApplication.connexions.add(connexion);
-
-						} else {
-
-							toSend = "Syntax Error !";
-							// toSend = String.valueOf(findSum(response));
-						}
-
-						break;
-					}
-
-					}
-
-				} catch (Exception e) {
-
-					WebAppSocketApplication.connexions.remove(connexion);
-					mySocket.close();
-				}
+				toSend = parseCode2(response, connexion, mySocket);
 				
+			
 				System.out.println("INFO$: toSend = " + toSend);
 				// On envoie la reponse au client
 				writer.println(toSend);
@@ -166,7 +71,7 @@ public class ClientProcessor implements Runnable, Observer {
 					WebAppSocketApplication.connexions.remove(connexion);
 					break;
 				}
-				
+
 			} catch (SocketException e) {
 				System.err.println("INFO$: LA CONNEXION A ETE INTERROMPUE !");
 				break;
@@ -175,8 +80,8 @@ public class ClientProcessor implements Runnable, Observer {
 			}
 
 			System.out.println("********************************************************************\n");
-			
-		}  // fin while 
+
+		} // fin while
 
 		System.out.println("Sortie");
 		WebAppSocketApplication.connexions.remove(connexion);
@@ -189,4 +94,177 @@ public class ClientProcessor implements Runnable, Observer {
 
 	}
 
+	public void getInfoConnexion(Socket mySocket, String response) {
+
+		// On affiche quelques infos, pour le débuggage
+		InetSocketAddress remote = (InetSocketAddress) mySocket.getRemoteSocketAddress();
+
+		String debug = "";
+		debug = "                  ----------------------------                      \n";
+		debug += "Thread : " + Thread.currentThread().getName() + "\n";
+		debug += "Demande de l'adresse : " + remote.getAddress().getHostAddress() + "\n";
+		debug += " Sur le port : " + remote.getPort() + "\n";
+		debug += "Commande reçue : " + response + "\n";
+		debug += "                 ----------------------------                      \n";
+		debug += "Date de réception: " + LocalDateTime.now() + "\n";
+
+		System.err.println("\n" + debug);
+
+	}
+
+	public String parseCode(String response, Connexion connexion) {
+
+		String toSend = "";
+		String sub = response.substring(3);
+
+		String recu = sub.replace('<', ' ');
+
+		String[] strings = recu.split(" ");
+		String IMEI = strings[0];
+		IMEI = IMEI.replace(">", "");
+
+		String IMSI = strings[1];
+		IMSI = IMSI.replace(">", "");
+
+		long ei = Long.parseLong(IMEI);
+		long si = Long.parseLong(IMSI);
+
+		Imei imei = new Imei(ei);
+		connexion.setImei(imei);
+
+		System.out.println("SERVEUR$: IMEI = " + IMEI);
+		System.out.println("SERVEUR$: IMSI = " + IMSI);
+
+		boolean match = false;
+		int j = 0;
+
+		while (!match && j < WebAppSocketApplication.abonnes.size()) {
+
+			Imei i = WebAppSocketApplication.abonnes.get(j);
+			long c = i.getCode();
+			if (c == ei) {
+
+				toSend = "OK";
+				match = true;
+				connexion.setAutorisation(true);
+				WebAppSocketApplication.connexions.add(connexion);
+				// initConnexion = false;
+
+			}
+
+			j++;
+		}
+
+		if (!match) {
+
+			System.out.println("Aucun code enregistré trouvé!");
+			toSend = "ERROR";
+			connexion.setAutorisation(false);
+			// closeConnexion = true;
+		}
+
+		return toSend;
+
+	}
+	
+	public String parseCode2(String response, Connexion connexion, Socket mySocket) {
+		
+		String toSend = "";
+		Imei imei = new Imei();
+		
+		try {
+			
+			switch (response.toUpperCase()) {
+			case "A":
+
+				toSend = "SERVEUR$: Vous m'avez envoyer la 1ere lettre de l'alphabet!";
+				break;
+			case "CLOSE":
+				toSend = "SERVEUR$: Vous voulez partir donc! D'accord, bye bye!";
+				//closeConnexion = true;
+				break;
+			default: {
+				if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {
+
+					try {
+						String sub = response.substring(3);
+
+						String recu = sub.replace('<', ' ');
+
+						String[] strings = recu.split(" ");
+						String IMEI = strings[0];
+						IMEI = IMEI.replace(">", "");
+
+						String IMSI = strings[1];
+						IMSI = IMSI.replace(">", "");
+
+						long ei = Long.parseLong(IMEI);
+						long si = Long.parseLong(IMSI);
+
+						//Imei imei = new Imei(ei);
+						imei.setCode(ei);
+						//connexion.setImei(imei);
+
+						System.out.println("SERVEUR$: IMEI = " + IMEI);
+						System.out.println("SERVEUR$: IMSI = " + IMSI);
+
+						boolean match = false;
+						int j = 0;
+
+						while (!match && j < WebAppSocketApplication.abonnes.size()) {
+
+							Imei i = WebAppSocketApplication.abonnes.get(j);
+							long c = i.getCode();
+							if (c == ei) {
+
+								toSend = "OK";
+								match = true;
+								connexion.setAutorisation(true);
+
+							}
+
+							j++;
+						}
+
+						if (!match) {
+
+							System.out.println("Aucun code enregistré trouvé!");
+							toSend = "ERROR";
+							connexion.setAutorisation(false);
+						}
+
+					} catch (Exception e) {
+
+						toSend = "Syntax Error !";
+
+					}
+
+					//WebAppSocketApplication.connexions.add(connexion);
+
+				} else {
+
+					toSend = "Syntax Error !";
+					
+				}
+
+				break;
+			}
+
+			}
+
+		} catch (Exception e) {
+
+			WebAppSocketApplication.connexions.remove(connexion);
+			try {
+				mySocket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		connexion.setImei(imei);
+		//WebAppSocketApplication.connexions.add(connexion);
+		return toSend;
+	}
 }

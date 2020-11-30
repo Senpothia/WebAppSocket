@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.michel.tcp.Connexion;
+import com.michel.tcp.Imei;
 import com.michel.tcp.WebAppSocketApplication;
 
 import java.net.InetSocketAddress;
@@ -60,7 +61,9 @@ public class ServerTcp {
 						connexion.setDate(date);
 						connexion.setDateTexte(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
 						connexion.setIp(remote.getAddress().getHostAddress());
-
+						connexion.setImei(new Imei());
+						WebAppSocketApplication.connexions.add(connexion);
+						
 						// Une fois reçu, on traite l'echange avec ce nouveau client dans un nouveau
 						// thread
 						System.out.println("INFO$: Une nouvelle connexion d'un client reçue!");
@@ -69,8 +72,8 @@ public class ServerTcp {
 						Thread newClientThread2 = new Thread(new ClientProcessor2(clientSocket, connexion));
 						newClientThread2.start();
 						
-						System.out.println("Fin de thread");
-						WebAppSocketApplication.connexions.remove(connexion);
+					//	System.out.println("Fin de thread");
+					//	WebAppSocketApplication.connexions.remove(connexion);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

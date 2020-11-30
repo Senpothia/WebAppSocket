@@ -41,6 +41,8 @@ public class HomeController {
 	@GetMapping("/connexions")
 	public String boardConnexions(Model model) {
 		
+		boolean vide = WebAppSocketApplication.connexions.isEmpty();
+		
 		model.addAttribute("connexions", WebAppSocketApplication.connexions);
 		
 		return "connexions";
