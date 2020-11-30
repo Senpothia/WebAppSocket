@@ -17,6 +17,7 @@ public class WebAppSocketApplication {
 	public static List<Connexion> connexions = new ArrayList<Connexion>();
 	public static Buffer buffer = new Buffer();
 	public static Chaine chaine = new Chaine();
+	public static List<Transfert> transferts = new ArrayList<Transfert>();
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebAppSocketApplication.class, args);

@@ -14,6 +14,7 @@ import java.util.Observer;
 
 import com.michel.tcp.Connexion;
 import com.michel.tcp.Imei;
+import com.michel.tcp.Transfert;
 import com.michel.tcp.WebAppSocketApplication;
 
 import java.io.InputStreamReader;
@@ -37,32 +38,52 @@ public class ClientProcessor implements Runnable, Observer {
 	public void run() {
 		System.out.println("INFO$: Lancement du traitement de la connexion d'un client");
 		boolean closeConnexion = false;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 	//	WebAppSocketApplication.connexions.add(connexion);
 		
 		// Tant que la connexion est active
 		while (!mySocket.isClosed()) {
 			try {
 				writer = new PrintWriter(mySocket.getOutputStream());
-				InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
-				BufferedReader br = new BufferedReader(inr);
-
-				String response = br.readLine();
-				System.out.println("INFO$: Message reçu du client: " + response);
-
-				// On affiche quelques infos, pour le débuggage
-				getInfoConnexion(mySocket, response);
-
-				// On traite la demande du client et on lui repond
-				String toSend = "";
 				
-				toSend = parseCode2(response, connexion, mySocket);
-				
-			
-				System.out.println("INFO$: toSend = " + toSend);
-				// On envoie la reponse au client
-				writer.println(toSend);
-				writer.flush();
+					
+					InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
+					BufferedReader br = new BufferedReader(inr);
+					String response = br.readLine();
+					
+					if (!WebAppSocketApplication.chaine.isLecture()) {
+						
+						Transfert transfert = new Transfert();
+						transfert.setEnvoi(LocalDateTime.now().format(formatter));
+						transfert.setCommande(WebAppSocketApplication.chaine.getMessage());
+						System.out.println("Acquittement reçu: " + response);
+						transfert.setAcquittement(response);
+						transfert.setRetour(LocalDateTime.now().format(formatter));
+						WebAppSocketApplication.transferts.add(transfert);
+						System.out.println("taille liste transferts: " + WebAppSocketApplication.transferts.size());
+						WebAppSocketApplication.chaine.setLecture(true);
 
+					}else {
+						
+						
+						System.out.println("INFO$: Message reçu du client: " + response);
+
+						// On affiche quelques infos, pour le débuggage
+						getInfoConnexion(mySocket, response);
+
+						// On traite la demande du client et on lui repond
+						String toSend = "";
+						
+						toSend = parseCode2(response, connexion, mySocket);
+						
+						System.out.println("INFO$: toSend = " + toSend);
+						// On envoie la reponse au client
+						writer.println(toSend);
+						writer.flush();
+					}
+				
+				
+				
 				if (closeConnexion) {
 					System.err.println("INFO$: COMMANDE CLOSE DETECTEE!");
 					writer = null;

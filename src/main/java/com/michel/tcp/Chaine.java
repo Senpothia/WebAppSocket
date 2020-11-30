@@ -4,16 +4,18 @@ public class Chaine {
 	
 	private String message = "";
 	private boolean change = false;
+	private boolean lecture = true;
 
 	public Chaine() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Chaine(String message, boolean change) {
+	public Chaine(String message, boolean change, boolean lecture) {
 		super();
 		this.message = message;
 		this.change = change;
+		this.lecture = lecture;
 	}
 
 	public String getMessage() {
@@ -32,6 +34,15 @@ public class Chaine {
 		this.change = change;
 	}
 
+	public boolean isLecture() {
+		return lecture;
+	}
+
+	public void setLecture(boolean lecture) {
+		this.lecture = lecture;
+	}
+
+	
 
 
 }

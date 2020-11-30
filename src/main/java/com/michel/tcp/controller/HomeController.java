@@ -1,5 +1,7 @@
 package com.michel.tcp.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.michel.tcp.Buffer;
 import com.michel.tcp.Chaine;
 import com.michel.tcp.Imei;
+import com.michel.tcp.Transfert;
 import com.michel.tcp.WebAppSocketApplication;
 
 @Controller
@@ -116,6 +119,16 @@ public class HomeController {
 		model.addAttribute("error", false);
 		return "redirect:/hexadecimal";
 		
+	}
+	
+	@GetMapping("/transferts")
+	public String getTransfert(Model model) {
+		
+		List<Transfert> transferts = WebAppSocketApplication.transferts;
+		model.addAttribute("transferts", transferts);
+		model.addAttribute("vide", false);
+		
+		return "transferts";
 	}
 
 }

@@ -12,8 +12,11 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.attoparser.trace.TraceBuilderMarkupHandler;
+
 import com.michel.tcp.Connexion;
 import com.michel.tcp.Imei;
+import com.michel.tcp.Transfert;
 import com.michel.tcp.WebAppSocketApplication;
 
 import java.io.InputStreamReader;
@@ -35,41 +38,42 @@ public class ClientProcessor2 implements Runnable {
 
 	// Le traitement
 	public void run() {
-			
-			System.out.println("INFO$: Lancement du traitement des transferts vers le client");
-			boolean closeConnexion = false;
 
-			while(!mySocket.isClosed()){
+		System.out.println("INFO$: Lancement du traitement des transferts vers le client");
+		boolean closeConnexion = false;
+		
 
-				try {
-					writer = new PrintWriter(mySocket.getOutputStream());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				if (WebAppSocketApplication.buffer.isChange()) {
+		while (!mySocket.isClosed()) {
 
-					
-					writer.println(WebAppSocketApplication.buffer.getCode());
-					writer.flush();
-					WebAppSocketApplication.buffer.setChange(false);
+			try {
+				writer = new PrintWriter(mySocket.getOutputStream());
+				InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
+				BufferedReader br = new BufferedReader(inr);
 
-				}
-				
-				if (WebAppSocketApplication.chaine.isChange()) {
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-					writer.println(WebAppSocketApplication.chaine.getMessage());
-					writer.flush();
-					WebAppSocketApplication.chaine.setChange(false);
+			if (WebAppSocketApplication.buffer.isChange()) {
 
-				}
-				
-				
+				writer.println(WebAppSocketApplication.buffer.getCode());
+				writer.flush();
+				WebAppSocketApplication.buffer.setChange(false);
+
+			}
+
+			if (WebAppSocketApplication.chaine.isChange()) {
+
+				writer.println(WebAppSocketApplication.chaine.getMessage());
+				writer.flush();
+				WebAppSocketApplication.chaine.setChange(false);
+				WebAppSocketApplication.chaine.setLecture(false);
+			}
+
 		}
 
-	// Tant que la connexion est active
-	
+		// Tant que la connexion est active
 
 	}
 
