@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.michel.tcp.Buffer;
@@ -156,6 +157,38 @@ public class HomeController {
 		commandeRepo.save(commande);
 		
 		return "redirect:/commandes";
+	}
+	
+	@GetMapping("/commande/appliquer/{id}")
+	public String appliquer(Model model, @PathVariable(name="id") Integer id) {
+		
+		Commande commande = commandeRepo.getOne(id);
+		String syntaxe = commande.getSyntaxe();
+		WebAppSocketApplication.chaine.setMessage(syntaxe);
+		WebAppSocketApplication.chaine.setChange(true);
+		System.out.println("String envoyé au client: " + WebAppSocketApplication.chaine.getMessage());
+		model.addAttribute("confirmation", true);
+		
+		List<Commande> commandes = commandeRepo.findAll();
+		System.out.println("taille: " + commandes.size());
+		model.addAttribute("commandes", commandes);
+		model.addAttribute("newCommande", new Commande());
+		return "commandes";
+		
+	}
+	
+	@GetMapping("/commande/supprimer/{id}")
+	public String supprimer(Model model, @PathVariable(name="id") Integer id) {
+		
+		Commande commande = commandeRepo.getOne(id);
+		commandeRepo.delete(commande);
+		List<Commande> commandes = commandeRepo.findAll();
+		System.out.println("taille: " + commandes.size());
+		model.addAttribute("commandes", commandes);
+		model.addAttribute("newCommande", new Commande());
+		model.addAttribute("confirmation", false);
+		return "commandes";
+		
 	}
 
 }

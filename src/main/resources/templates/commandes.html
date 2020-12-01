@@ -32,12 +32,11 @@
 		</div>
 		<!-- ***********   Alerte erreur  ************ -->
 
-		<span th:if="${erreur}">
+		<span th:if="${confirmation}">
 			<div class="message row">
 
 				<p>
-					<b style="color: red;">Les sites, secteurs, voies longueurs
-						doivent avoir un nom unique! Enregistrement impossible!</b>
+					<b>La commande a été envoyée!</b>
 				</p>
 
 			</div>
@@ -83,8 +82,16 @@
 										<td style="text-align: center" th:text="${commande.syntaxe}" />
 										<td style="text-align: center"
 											th:text="${commande.description}" />
-										<td style="text-align: center" />
-										<td style="text-align: center" />
+											
+											<td style="text-align: center"><a
+											th:href="@{/commande/supprimer/{id}(id=${commande.id})}"><p
+													type="text" class="btn btn-danger mt-3 mr-1 bouton2" >supprimer</p></a></td>
+											
+										
+										<td style="text-align: center"><a
+											th:href="@{/commande/appliquer/{id}(id=${commande.id})}"><p
+													type="text" class="btn btn-primary mt-3 mr-1 bouton2" >appliquer</p></a></td>
+
 
 
 										<!--  
