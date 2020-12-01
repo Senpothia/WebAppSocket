@@ -13,7 +13,7 @@
 	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
 	crossorigin="anonymous">
 <link rel="stylesheet" href="/css/styles.css">
-<title>WebAppTcp - Configuration</title>
+<title>WebAppTcp - Commandes</title>
 </head>
 <body>
 	<div class="container">
@@ -26,7 +26,7 @@
 		<div class="message row">
 
 			<h1>
-				<b>Pour configurer le système, remplir ce formulaire.</b>
+				<b>Pour créer une commande, remplir ce formulaire.</b>
 			</h1>
 
 		</div>
@@ -45,7 +45,8 @@
 		<!-- ********************************************* -->
 
 		<div class="container">
-			<form th:action="@{/configuration}" method="post" th:object="${imei}">
+			<form th:action="@{/commande/creer}" method="post"
+				th:object="${commande}">
 
 
 				<div class="col">
@@ -56,52 +57,75 @@
 
 						<div class="col donnees" style="margin: 5px;">
 
+
 							<table class="table table-striped">
 								<thead>
 									<tr>
-										<th style="text-align: center" scope="col">Codes
-											enregistrés</th>
 
-										<!-- <th style="text-align: center" scope="col">Autorisations</th>
-									 -->
+										<th style="text-align: center" scope="col">N°</th>
+										<th style="text-align: center" scope="col">Commande</th>
+
+										<th style="text-align: center" scope="col">Description</th>
+
+
+										<th style="text-align: center" scope="col">Supprimer</th>
+
+										<th style="text-align: center" scope="col">Appliquer</th>
 
 
 
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="abonne, iStat: ${abonnes}">
+									<tr th:each="commande, iStat: ${commandes}">
 
-										<td style="text-align: center" th:text="${abonne.code}" />
+										<td style="text-align: center" th:text="${iStat.count}" />
+										<td style="text-align: center" th:text="${commande.syntaxe}" />
+										<td style="text-align: center"
+											th:text="${commande.description}" />
+										<td style="text-align: center" />
+										<td style="text-align: center" />
+
 
 										<!--  
-
-										<td style="text-align: center"><span
-											th:if="${droits.get(iStat.index)}"><img
-												class="img-fluid" src="/vert.png" alt=""
-												th:src="@{/vert.png}" /></span> <span
-											th:unless="${droits.get(iStat.index)}"><img
-												class="img-fluid" src="/rouge.png" alt=""
-												th:src="@{/rouge.png}" /></span></td>
--->
-
-
+									<td style="text-align: center"><span
+										th:if="${connexion.autorisation}"><img
+											class="img-fluid" src="/vert.png" alt=""
+											th:src="@{/vert.png}" /></span> <span
+										th:unless="${connexion.autorisation}"><img
+											class="img-fluid" src="/rouge.png" alt=""
+											th:src="@{/rouge.png}" /></span></td>
+											
+											 -->
 									</tr>
 
 								</tbody>
 							</table>
-
 
 						</div>
 
 
 					</div>
 
-					<div class="row mr-1">
-						<label for="text">Code autorisé</label> <input type="text"
-							class="form-control" th:field="*{code}">
-					</div>
 
+
+					<form th:action="@{/commande/creer}" method="post"
+						th:object="${newCommande}">
+
+
+						<div class="col">
+							<div class="row mr-1">
+								<label for="text">Syntaxe de la nouvelle commande</label> <input
+									type="text" class="form-control" th:field="*{syntaxe}">
+							</div>
+
+							<div class="row mr-1">
+								<label for="text">Descrition</label> <input type="text"
+									class="form-control" th:field="*{description}">
+							</div>
+
+						</div>
+					</form>
 
 
 
@@ -110,18 +134,13 @@
 						<div class="col">
 
 							<div class="d-flex justify-content-end">
-							<a
-							class="btn btn-primary mt-3 mr-1 bouton2" href="/commandes"
-							role="button">Commandes</a>
-							<a
-							class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
-							role="button">Connexions</a>
-							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/hexadecimal"
-									role="button">Transfert</a>
-								<input type="submit" class="btn btn-primary mt-3 bouton2"
-									value="Enregistrer">
-									
-								
+								<a class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
+									role="button">Connexions</a> <a
+									class="btn btn-primary mt-3 mr-1 bouton2" href="/hexadecimal"
+									role="button">Transfert</a> <input type="submit"
+									class="btn btn-primary mt-3 bouton2" value="Enregistrer">
+
+
 							</div>
 						</div>
 					</div>

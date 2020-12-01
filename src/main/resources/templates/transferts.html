@@ -64,7 +64,8 @@
 									<td style="text-align: center" th:text="${iStat.index}" />
 									<td style="text-align: center" th:text="${transfert.commande}" />
 									<td style="text-align: center" th:text="${transfert.envoi}" />
-									<td style="text-align: center" th:text="${transfert.acquittement}" />
+									<td style="text-align: center"
+										th:text="${transfert.acquittement}" />
 									<td style="text-align: center" th:text="${transfert.retour}" />
 
 
@@ -106,7 +107,11 @@
 
 				<div class="col">
 					<div class="d-flex justify-content-end">
-						<a class="btn btn-primary mb-1 mr-1 bouton2" href="/configuration"
+					 <a
+							class="btn btn-primary mb-1 mr-1 bouton2" href="/commandes"
+							role="button">Commandes</a>
+						 <a
+							class="btn btn-primary mb-1 mr-1 bouton2" href="/configuration"
 							role="button">Configuration</a> <a
 							class="btn btn-primary mb-1 mr-1 bouton2" href="/hexadecimal"
 							role="button">Transfert</a> <a

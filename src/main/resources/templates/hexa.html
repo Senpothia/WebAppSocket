@@ -33,7 +33,8 @@
 			<div class="message row">
 
 				<p>
-					<b style="color: red;">Le code ne correspond pas a de l'hexadécimal!</b>
+					<b style="color: red;">Le code ne correspond pas a de
+						l'hexadécimal!</b>
 				</p>
 
 			</div>
@@ -67,23 +68,23 @@
 						<div class="col">
 
 							<div class="d-flex justify-content-end">
-							<!--  
+								<!--  
 							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/configuration"
 									role="button">Configuration</a>
 								<a class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
 									role="button">Connexions</a>
 									
-								-->	
-									 <input type="submit"
-									class="btn btn-primary mt-3 bouton2" value="Envoyer">
+								-->
+								<input type="submit" class="btn btn-primary mt-3 bouton2"
+									value="Envoyer">
 
 
 							</div>
 						</div>
 					</div>
 			</form>
-			
-			
+
+
 			<form th:action="@{/string}" method="post" th:object="${chaine}">
 
 
@@ -107,13 +108,15 @@
 						<div class="col">
 
 							<div class="d-flex justify-content-end">
-							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/transferts"
-									role="button">Transferts</a>
-							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/hello"
-									role="button">Hello</a>
-							<a class="btn btn-primary mt-3 mr-1 bouton2" href="/configuration"
-									role="button">Configuration</a>
-								<a class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
+								<a class="btn btn-primary mt-3 mr-1 bouton2" href="/commandes"
+									role="button">Commandes</a> <a
+									class="btn btn-primary mt-3 mr-1 bouton2" href="/transferts"
+									role="button">Transferts</a> <a
+									class="btn btn-primary mt-3 mr-1 bouton2" href="/hello"
+									role="button">Hello</a> <a
+									class="btn btn-primary mt-3 mr-1 bouton2" href="/configuration"
+									role="button">Configuration</a> <a
+									class="btn btn-primary mt-3 mr-1 bouton2" href="/connexions"
 									role="button">Connexions</a> <input type="submit"
 									class="btn btn-primary mt-3 bouton2" value="Envoyer">
 

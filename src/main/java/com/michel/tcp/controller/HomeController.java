@@ -2,6 +2,7 @@ package com.michel.tcp.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.michel.tcp.Buffer;
 import com.michel.tcp.Chaine;
+import com.michel.tcp.Commande;
 import com.michel.tcp.Imei;
 import com.michel.tcp.Transfert;
 import com.michel.tcp.WebAppSocketApplication;
+import com.michel.tcp.repositoty.CommandeRepo;
 
 @Controller
 public class HomeController {
+	
+	@Autowired
+	CommandeRepo commandeRepo;
 	
 	@GetMapping("/")
 	public String accueil() {
@@ -129,6 +135,27 @@ public class HomeController {
 		model.addAttribute("vide", false);
 		
 		return "transferts";
+	}
+	
+	@GetMapping("/commandes")
+	public String commandes(Model model) {
+		
+		List<Commande> commandes = commandeRepo.findAll();
+		System.out.println("taille: " + commandes.size());
+		model.addAttribute("commandes", commandes);
+		model.addAttribute("newCommande", new Commande());
+		return "commandes";
+	}
+	
+	@PostMapping("/commande/creer")
+	public String creerCommande(Commande newCommande) {
+		
+		Commande commande = new Commande();
+		commande.setDescription(newCommande.getDescription());
+		commande.setSyntaxe(newCommande.getSyntaxe());
+		commandeRepo.save(commande);
+		
+		return "redirect:/commandes";
 	}
 
 }
