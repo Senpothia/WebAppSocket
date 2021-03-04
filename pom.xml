@@ -12,7 +12,7 @@
 	<groupId>com.michel.tcp</groupId>
 	<artifactId>WebSocket</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>WebAppSocket</name>
 	<description>Editeur de test</description>
 
@@ -29,6 +29,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
@@ -80,7 +86,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>webapptcp2</finalName>
+		<finalName>webapptcp</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

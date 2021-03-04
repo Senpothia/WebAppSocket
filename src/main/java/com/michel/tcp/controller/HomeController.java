@@ -170,7 +170,7 @@ public class HomeController {
 		model.addAttribute("confirmation", true);
 		
 		List<Commande> commandes = commandeRepo.findAll();
-		System.out.println("taille: " + commandes.size());
+		
 		model.addAttribute("commandes", commandes);
 		model.addAttribute("newCommande", new Commande());
 		return "commandes";
@@ -183,7 +183,7 @@ public class HomeController {
 		Commande commande = commandeRepo.getOne(id);
 		commandeRepo.delete(commande);
 		List<Commande> commandes = commandeRepo.findAll();
-		System.out.println("taille: " + commandes.size());
+		
 		model.addAttribute("commandes", commandes);
 		model.addAttribute("newCommande", new Commande());
 		model.addAttribute("confirmation", false);
