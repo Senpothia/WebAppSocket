@@ -49,28 +49,30 @@ public class ClientProcessor2 implements Runnable {
 				writer = new PrintWriter(mySocket.getOutputStream());
 				InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
 				BufferedReader br = new BufferedReader(inr);
+				
+				if (WebAppSocketApplication.buffer.isChange()) {
+
+					writer.println(WebAppSocketApplication.buffer.getCode());
+					writer.flush();
+					WebAppSocketApplication.buffer.setChange(false);
+
+				}
+
+				if (WebAppSocketApplication.chaine.isChange()) {
+
+					writer.println(WebAppSocketApplication.chaine.getMessage());
+					writer.flush();
+					WebAppSocketApplication.chaine.setChange(false);
+					WebAppSocketApplication.chaine.setLecture(false);
+				}
+
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			if (WebAppSocketApplication.buffer.isChange()) {
-
-				writer.println(WebAppSocketApplication.buffer.getCode());
-				writer.flush();
-				WebAppSocketApplication.buffer.setChange(false);
-
-			}
-
-			if (WebAppSocketApplication.chaine.isChange()) {
-
-				writer.println(WebAppSocketApplication.chaine.getMessage());
-				writer.flush();
-				WebAppSocketApplication.chaine.setChange(false);
-				WebAppSocketApplication.chaine.setLecture(false);
-			}
-
+			
 		}
 
 		// Tant que la connexion est active

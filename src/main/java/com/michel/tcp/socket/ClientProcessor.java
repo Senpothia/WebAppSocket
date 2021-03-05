@@ -205,71 +205,86 @@ public class ClientProcessor implements Runnable, Observer {
 				//closeConnexion = true;
 				break;
 			default: {
-				if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {
+				
+				
+				if (response.toUpperCase().startsWith("P:")) {
+					
+					
+					
+					
+				}else {
+					
+					
+					if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {//****
 
-					try {
-						String sub = response.substring(3);
+						try {
+							String sub = response.substring(3);
 
-						String recu = sub.replace('<', ' ');
+							String recu = sub.replace('<', ' ');
 
-						String[] strings = recu.split(" ");
-						String IMEI = strings[0];
-						IMEI = IMEI.replace(">", "");
+							String[] strings = recu.split(" ");
+							String IMEI = strings[0];
+							IMEI = IMEI.replace(">", "");
 
-						String IMSI = strings[1];
-						IMSI = IMSI.replace(">", "");
+							String IMSI = strings[1];
+							IMSI = IMSI.replace(">", "");
 
-						long ei = Long.parseLong(IMEI);
-						long si = Long.parseLong(IMSI);
+							long ei = Long.parseLong(IMEI);
+							long si = Long.parseLong(IMSI);
 
-						//Imei imei = new Imei(ei);
-						imei.setCode(ei);
-						//connexion.setImei(imei);
+							//Imei imei = new Imei(ei);
+							imei.setCode(ei);
+							//connexion.setImei(imei);
 
-						System.out.println("SERVEUR$: IMEI = " + IMEI);
-						System.out.println("SERVEUR$: IMSI = " + IMSI);
+							System.out.println("SERVEUR$: IMEI = " + IMEI);
+							System.out.println("SERVEUR$: IMSI = " + IMSI);
 
-						boolean match = false;
-						int j = 0;
+							boolean match = false;
+							int j = 0;
 
-						while (!match && j < WebAppSocketApplication.abonnes.size()) {
+							while (!match && j < WebAppSocketApplication.abonnes.size()) {
 
-							Imei i = WebAppSocketApplication.abonnes.get(j);
-							long c = i.getCode();
-							if (c == ei) {
+								Imei i = WebAppSocketApplication.abonnes.get(j);
+								long c = i.getCode();
+								if (c == ei) {
 
-								toSend = "OK";
-								match = true;
-								connexion.setAutorisation(true);
+									toSend = "OK";
+									match = true;
+									connexion.setAutorisation(true);
 
+								}
+
+								j++;
 							}
 
-							j++;
+							if (!match) {
+
+								System.out.println("Aucun code enregistré trouvé!");
+								toSend = "ERROR";
+								connexion.setAutorisation(false);
+							}
+
+						} catch (Exception e) {
+
+							toSend = "Syntax Error !";
+
 						}
 
-						if (!match) {
+						//WebAppSocketApplication.connexions.add(connexion);
 
-							System.out.println("Aucun code enregistré trouvé!");
-							toSend = "ERROR";
-							connexion.setAutorisation(false);
-						}
-
-					} catch (Exception e) {
+					} else {
 
 						toSend = "Syntax Error !";
-
-					}
-
-					//WebAppSocketApplication.connexions.add(connexion);
-
-				} else {
-
-					toSend = "Syntax Error !";
-					
+						
+					}//********
 				}
+				
+				
+				
+
 
 				break;
-			}
+			}   // fin default
 
 			}
 

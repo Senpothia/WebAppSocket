@@ -12,7 +12,7 @@
 	<groupId>com.michel.tcp</groupId>
 	<artifactId>WebSocket</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>WebAppSocket</name>
 	<description>Editeur de test</description>
 
@@ -86,7 +86,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>webapptcp</finalName>
+		<finalName>webapptcp4</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
