@@ -1,5 +1,7 @@
 package com.michel.tcp.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +94,7 @@ public class HomeController {
 			buffer.testHex();
 			WebAppSocketApplication.buffer.setCode(buffer.getCode());
 			WebAppSocketApplication.buffer.setChange(true);
+			
 			System.out.println("Code envoyé au client: " + WebAppSocketApplication.buffer.getCode());
 			model.addAttribute("error", false);
 			return "redirect:/hexadecimal";
@@ -173,6 +176,10 @@ public class HomeController {
 		
 		model.addAttribute("commandes", commandes);
 		model.addAttribute("newCommande", new Commande());
+		//LocalDateTime date = LocalDateTime.now();
+		//WebAppSocketApplication.log = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + " " + syntaxe + "\n";
+		//WebAppSocketApplication.logs = 	WebAppSocketApplication.log + "\n"+ WebAppSocketApplication.logs;
+		
 		return "commandes";
 		
 	}
@@ -190,5 +197,23 @@ public class HomeController {
 		return "commandes";
 		
 	}
+	
+	@GetMapping("/logs")
+	public String logs(Model model) {
+		
+		model.addAttribute("logs", WebAppSocketApplication.logs);
+		
+		return "logs";
+	}
+	
+	@GetMapping("/logsreset")
+	public String logsReset(Model model) {
+		
+		WebAppSocketApplication.logs = "";
+		model.addAttribute("logs", WebAppSocketApplication.logs);
+		
+		return "logs";
+	}
+
 
 }

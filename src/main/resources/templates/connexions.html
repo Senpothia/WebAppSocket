@@ -53,6 +53,7 @@
 									<th style="text-align: center" scope="col">Date</th>
 
 									<th style="text-align: center" scope="col">Autorisation</th>
+									<th style="text-align: center" scope="col">Déconnexion</th>
 
 
 
@@ -75,6 +76,10 @@
 										th:unless="${connexion.autorisation}"><img
 											class="img-fluid" src="/rouge.png" alt=""
 											th:src="@{/rouge.png}" /></span></td>
+
+									<td style="text-align: center"><a
+										th:href="@{/connexion/disconnect/{id}(id=${iStat})}"><p
+												type="text" class="btn btn-danger mt-3 mr-1 bouton2">Déconnecter</p></a></td>
 								</tr>
 
 							</tbody>
@@ -103,14 +108,16 @@
 
 				<div class="col">
 					<div class="d-flex justify-content-end">
-					<a class="btn btn-primary mb-1 mr-1 bouton2" th:href="@{/commandes}"
-							role="button">Commandes</a>
-						<a class="btn btn-primary mb-1 mr-1 bouton2" th:href="@{/configuration}"
-							role="button">Configuration</a> <a
-							class="btn btn-primary mb-1 mr-1 bouton2" th:href="@{/hexadecimal}"
-							role="button">Transfert</a> <a
-							class="btn btn-primary mb-1 mr-1 bouton2" th:href="@{/connexions}"
-							role="button">Raffraichir</a>
+						<a class="btn btn-primary mb-1 mr-1 bouton2"
+							th:href="@{/commandes}" role="button">Commandes</a> <a
+							class="btn btn-primary mb-1 mr-1 bouton2"
+							th:href="@{/configuration}" role="button">Configuration</a> <a
+							class="btn btn-primary mb-1 mr-1 bouton2"
+							th:href="@{/hexadecimal}" role="button">Transfert</a> <a
+							class="btn btn-primary mb-1 mr-1 bouton2" th:href="@{/logs}"
+							role="button">Logs</a> <a
+							class="btn btn-primary mb-1 mr-1 bouton2"
+							th:href="@{/connexions}" role="button">Raffraichir</a>
 
 
 					</div>

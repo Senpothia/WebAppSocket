@@ -28,6 +28,7 @@ public class ClientProcessor implements Runnable, Observer {
 	private String IMEI = "";
 	private String IMSI = "";
 	private Connexion connexion;
+	private LocalDateTime date;
 
 	public ClientProcessor(Socket socket, Connexion connexion) {
 		this.mySocket = socket;
@@ -57,6 +58,9 @@ public class ClientProcessor implements Runnable, Observer {
 						transfert.setEnvoi(LocalDateTime.now().format(formatter));
 						transfert.setCommande(WebAppSocketApplication.chaine.getMessage());
 						System.out.println("Acquittement reçu: " + response);
+						LocalDateTime date = LocalDateTime.now();
+						WebAppSocketApplication.log = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + " " + response + "\n";
+						WebAppSocketApplication.logs = 	WebAppSocketApplication.log + "\n"+ WebAppSocketApplication.logs;
 						transfert.setAcquittement(response);
 						transfert.setRetour(LocalDateTime.now().format(formatter));
 						WebAppSocketApplication.transferts.add(transfert);
@@ -143,9 +147,16 @@ public class ClientProcessor implements Runnable, Observer {
 		String[] strings = recu.split(" ");
 		String IMEI = strings[0];
 		IMEI = IMEI.replace(">", "");
-
+		
+		date = LocalDateTime.now();
+		WebAppSocketApplication.log = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + " " + response + "\n";
+		WebAppSocketApplication.logs = 	WebAppSocketApplication.log+ "\n" + WebAppSocketApplication.logs;
+		System.out.println(WebAppSocketApplication.logs);
+		
 		String IMSI = strings[1];
 		IMSI = IMSI.replace(">", "");
+		
+		
 
 		long ei = Long.parseLong(IMEI);
 		long si = Long.parseLong(IMSI);
@@ -193,6 +204,11 @@ public class ClientProcessor implements Runnable, Observer {
 		String toSend = "";
 		Imei imei = new Imei();
 		
+		date = LocalDateTime.now();
+		WebAppSocketApplication.log = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + " " + response + "\n";
+		WebAppSocketApplication.logs = 	WebAppSocketApplication.log + "\n"+ WebAppSocketApplication.logs;
+		System.out.println(WebAppSocketApplication.logs);
+		
 		try {
 			
 			switch (response.toUpperCase()) {
@@ -225,6 +241,7 @@ public class ClientProcessor implements Runnable, Observer {
 							String[] strings = recu.split(" ");
 							String IMEI = strings[0];
 							IMEI = IMEI.replace(">", "");
+							
 
 							String IMSI = strings[1];
 							IMSI = IMSI.replace(">", "");
@@ -266,7 +283,7 @@ public class ClientProcessor implements Runnable, Observer {
 
 						} catch (Exception e) {
 
-							toSend = "Syntax Error !";
+						//	toSend = "Syntax Error !";
 
 						}
 
@@ -274,7 +291,7 @@ public class ClientProcessor implements Runnable, Observer {
 
 					} else {
 
-						toSend = "Syntax Error !";
+					//	toSend = "Syntax Error !";
 						
 					}//********
 				}

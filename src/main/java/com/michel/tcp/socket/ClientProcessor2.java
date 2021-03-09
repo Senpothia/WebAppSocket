@@ -51,15 +51,26 @@ public class ClientProcessor2 implements Runnable {
 				BufferedReader br = new BufferedReader(inr);
 				
 				if (WebAppSocketApplication.buffer.isChange()) {
-
+					
+					
+					LocalDateTime date = LocalDateTime.now();
+					WebAppSocketApplication.log = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + " " + WebAppSocketApplication.buffer.getCode() + "\n";
+					WebAppSocketApplication.logs = 	WebAppSocketApplication.log + "\n"+ WebAppSocketApplication.logs;
+					 
 					writer.println(WebAppSocketApplication.buffer.getCode());
 					writer.flush();
 					WebAppSocketApplication.buffer.setChange(false);
+					
 
 				}
 
 				if (WebAppSocketApplication.chaine.isChange()) {
-
+					
+					
+					LocalDateTime date = LocalDateTime.now();
+					WebAppSocketApplication.log = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + " " + WebAppSocketApplication.chaine.getMessage() + "\n";
+					WebAppSocketApplication.logs = 	WebAppSocketApplication.log + "\n"+ WebAppSocketApplication.logs;
+					
 					writer.println(WebAppSocketApplication.chaine.getMessage());
 					writer.flush();
 					WebAppSocketApplication.chaine.setChange(false);
