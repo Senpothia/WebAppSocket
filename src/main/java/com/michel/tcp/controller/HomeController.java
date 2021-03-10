@@ -214,6 +214,18 @@ public class HomeController {
 		
 		return "logs";
 	}
+	
+	@GetMapping("/connexion/disconnect/{id}")
+	public String deconnexion(Model model, @PathVariable("id") Integer id) {
+		
+		System.out.println("id connexion: " + id);
+		//model.addAttribute("connexions", WebAppSocketApplication.connexions);
+		WebAppSocketApplication.connexions.remove(0);
+		WebAppSocketApplication.disconnectRequest = true;
+		
+		
+		return "redirect:/connexions";
+	}
 
 
 }

@@ -76,6 +76,17 @@ public class ClientProcessor2 implements Runnable {
 					WebAppSocketApplication.chaine.setChange(false);
 					WebAppSocketApplication.chaine.setLecture(false);
 				}
+				
+
+				if (WebAppSocketApplication.disconnectRequest) {
+					System.err.println("INFO$: COMMANDE CLOSE DETECTEE!");
+					writer = null;
+					reader = null;
+					mySocket.close();
+					WebAppSocketApplication.disconnectRequest = false;
+					//WebAppSocketApplication.connexions.remove(connexion);
+					break;
+				}
 
 
 			} catch (IOException e) {

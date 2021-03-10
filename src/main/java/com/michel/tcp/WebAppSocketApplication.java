@@ -20,6 +20,7 @@ public class WebAppSocketApplication {
 	public static List<Transfert> transferts = new ArrayList<Transfert>();
 	public static String log ="";
 	public static String logs ="";
+	public static boolean disconnectRequest = false;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebAppSocketApplication.class, args);

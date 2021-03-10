@@ -77,11 +77,12 @@
 											class="img-fluid" src="/rouge.png" alt=""
 											th:src="@{/rouge.png}" /></span></td>
 
+
 									<td style="text-align: center"><a
-										th:href="@{/connexion/disconnect/{id}(id=${iStat})}"><p
+										th:href="@{/connexion/disconnect/{id}(id=${iStat.index})}"><p
 												type="text" class="btn btn-danger mt-3 mr-1 bouton2">Déconnecter</p></a></td>
 								</tr>
-
+ 
 							</tbody>
 						</table>
 

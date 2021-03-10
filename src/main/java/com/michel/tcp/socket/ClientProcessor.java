@@ -45,9 +45,8 @@ public class ClientProcessor implements Runnable, Observer {
 		// Tant que la connexion est active
 		while (!mySocket.isClosed()) {
 			try {
-				writer = new PrintWriter(mySocket.getOutputStream());
 				
-					
+					writer = new PrintWriter(mySocket.getOutputStream());
 					InputStreamReader inr = new InputStreamReader(mySocket.getInputStream());
 					BufferedReader br = new BufferedReader(inr);
 					String response = br.readLine();
@@ -68,12 +67,11 @@ public class ClientProcessor implements Runnable, Observer {
 						WebAppSocketApplication.chaine.setLecture(true);
 
 					}else {
-						
-						
+												
 						System.out.println("INFO$: Message reçu du client: " + response);
 
 						// On affiche quelques infos, pour le débuggage
-						getInfoConnexion(mySocket, response);
+						//getInfoConnexion(mySocket, response);
 
 						// On traite la demande du client et on lui repond
 						String toSend = "";
@@ -82,29 +80,34 @@ public class ClientProcessor implements Runnable, Observer {
 						
 						System.out.println("INFO$: toSend = " + toSend);
 						// On envoie la reponse au client
-						writer.println(toSend);
-						writer.flush();
+						if (!toSend.equals("")) {
+							
+							writer.println(toSend);
+							writer.flush();
+							
+						}
+						
+											
 					}
 				
-				
-				
-				if (closeConnexion) {
+				if (WebAppSocketApplication.disconnectRequest) {
 					System.err.println("INFO$: COMMANDE CLOSE DETECTEE!");
 					writer = null;
 					reader = null;
 					mySocket.close();
-					WebAppSocketApplication.connexions.remove(connexion);
-					break;
+					WebAppSocketApplication.disconnectRequest = false;
+					//WebAppSocketApplication.connexions.remove(connexion);
+					
 				}
 
 			} catch (SocketException e) {
 				System.err.println("INFO$: LA CONNEXION A ETE INTERROMPUE !");
-				break;
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
-			System.out.println("********************************************************************\n");
+			
 
 		} // fin while
 
@@ -119,6 +122,7 @@ public class ClientProcessor implements Runnable, Observer {
 
 	}
 
+	/*
 	public void getInfoConnexion(Socket mySocket, String response) {
 
 		// On affiche quelques infos, pour le débuggage
@@ -136,7 +140,10 @@ public class ClientProcessor implements Runnable, Observer {
 		System.err.println("\n" + debug);
 
 	}
+	
+	*/
 
+	/*
 	public String parseCode(String response, Connexion connexion) {
 
 		String toSend = "";
@@ -199,6 +206,7 @@ public class ClientProcessor implements Runnable, Observer {
 
 	}
 	
+	*/
 	public String parseCode2(String response, Connexion connexion, Socket mySocket) {
 		
 		String toSend = "";
@@ -211,25 +219,21 @@ public class ClientProcessor implements Runnable, Observer {
 		
 		try {
 			
+			/*
 			switch (response.toUpperCase()) {
-			case "A":
-
-				toSend = "SERVEUR$: Vous m'avez envoyer la 1ere lettre de l'alphabet!";
-				break;
-			case "CLOSE":
-				toSend = "SERVEUR$: Vous voulez partir donc! D'accord, bye bye!";
-				//closeConnexion = true;
-				break;
+		
 			default: {
-				
-				
-				if (response.toUpperCase().startsWith("P:")) {
-					
-					
-					
+		
+				if (response.toUpperCase().startsWith("P:") ||
+					response.toUpperCase().startsWith("D:") || 
+					response.toUpperCase().startsWith("S:") ||
+					response.toUpperCase().startsWith("V")  ||
+					!response.toUpperCase().startsWith("C:<")
+						) 
+				{
 					
 				}else {
-					
+				*/
 					
 					if (response.toUpperCase().startsWith("C:<") && response.endsWith(">")) {//****
 
@@ -294,17 +298,16 @@ public class ClientProcessor implements Runnable, Observer {
 					//	toSend = "Syntax Error !";
 						
 					}//********
+					
+					/*
 				}
 				
-				
-				
-
-
+			
 				break;
 			}   // fin default
 
 			}
-
+*/
 		} catch (Exception e) {
 
 			WebAppSocketApplication.connexions.remove(connexion);
