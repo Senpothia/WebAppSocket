@@ -322,5 +322,5 @@ public class ClientProcessor implements Runnable, Observer {
 		connexion.setImei(imei);
 		//WebAppSocketApplication.connexions.add(connexion);
 		return toSend;
-	}
+	 }
 }

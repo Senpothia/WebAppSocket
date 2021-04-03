@@ -54,7 +54,7 @@ public class Centrale implements Runnable{
 		
 	
 		
-	}
+ 	 }
 	
 	
 	
