@@ -86,7 +86,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>webapptcp4</finalName>
+		<finalName>webapptcp5</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
